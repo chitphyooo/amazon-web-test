@@ -1,5 +1,7 @@
-import {cart} from '../data/cart.js';
+import {cart,addToCart} from '../data/cart.js';
 import {products} from '../data/products.js';
+
+
 
 let productHTML = '';
 products.forEach((product) => {
@@ -57,25 +59,34 @@ products.forEach((product) => {
 
 document.querySelector('.js-product').innerHTML = productHTML;
 
+
+
+
+
+function updateCartQuantity() {
+
+          let cartQuantity = 0;         
+          
+          cart.forEach((item) => {   
+            cartQuantity += item.quantity;                                            
+          });
+         
+          
+          document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
+
+};
+
 let addMassageTimeout = {};
 
-console.log(addMassageTimeout);
+
 
 document.querySelectorAll('.js-addto-cart-btn')
 .forEach((button) => {
     button.addEventListener('click', () => {
-        let productId = button.dataset.productId;        
+        let productId = button.dataset.productId;   
+        
 
-        let matchingItem;
-
-        cart.forEach((item) => {
-            if(productId === item.productId) {
-                matchingItem = item;
-            }           
-        });
-
-        let selectorValue = document.querySelector(`.js-quantity-selector-${productId}`).value;
-        let selectorValueNum = Number(selectorValue);
+        addToCart(productId);        // Call the addToCart function to add the product to the cart
 
         let addNoti = document.querySelector(`.js-add-noti-${productId}`);
         addNoti.classList.add('js-add');
@@ -94,25 +105,8 @@ document.querySelectorAll('.js-addto-cart-btn')
 
         
         addMassageTimeout[productId] = timeoutId;
-        
 
-
-         if(matchingItem) {
-                matchingItem.quantity += selectorValueNum;
-            } else {
-                 cart.push({
-                    productId: productId,
-                    quantity: selectorValueNum
-        });
-            }
-          let cartQuantity = 0;         
-          
-          cart.forEach((item) => {   
-            cartQuantity += item.quantity;                                            
-          });
-         
-          
-          document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
+        updateCartQuantity();  // Call the updateCartQuantity function to update the cart quantity display
                    
         
     })
